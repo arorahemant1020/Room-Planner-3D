@@ -16,35 +16,42 @@ import {
 interface RoomDimensionsModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (width: number, length: number) => void
+  onSubmit: (width: number, length: number, height: number) => void
 }
 
 export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimensionsModalProps) {
   const [width, setWidth] = useState("12")
   const [length, setLength] = useState("15")
+  const [height, setHeight] = useState("8")
   const [error, setError] = useState("")
 
   const handleSubmit = () => {
     const widthNum = Number.parseFloat(width)
     const lengthNum = Number.parseFloat(length)
+    const heightNum = Number.parseFloat(height)
 
-    if (isNaN(widthNum) || isNaN(lengthNum)) {
+    if (isNaN(widthNum) || isNaN(lengthNum) || isNaN(heightNum)) {
       setError("Please enter valid numbers")
       return
     }
 
-    if (widthNum <= 0 || lengthNum <= 0) {
+    if (widthNum <= 0 || lengthNum <= 0 || heightNum <= 0) {
       setError("Dimensions must be greater than zero")
       return
     }
 
     if (widthNum > 50 || lengthNum > 50) {
-      setError("Maximum dimension is 50 feet")
+      setError("Maximum width/length is 50 feet")
+      return
+    }
+
+    if (heightNum > 20) {
+      setError("Maximum height is 20 feet")
       return
     }
 
     setError("")
-    onSubmit(widthNum, lengthNum)
+    onSubmit(widthNum, lengthNum, heightNum)
     onOpenChange(false)
   }
 
@@ -86,6 +93,21 @@ export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimens
               step="0.5"
             />
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="height" className="text-right">
+              Height (ft)
+            </Label>
+            <Input
+              id="height"
+              type="number"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              className="col-span-3"
+              min="6"
+              max="20"
+              step="0.5"
+            />
+          </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
         <DialogFooter>
@@ -95,4 +117,3 @@ export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimens
     </Dialog>
   )
 }
-

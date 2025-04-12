@@ -3,6 +3,7 @@
 interface RoomProps {
   width: number
   length: number
+  height: number
   onAddDoor?: (wall: "north" | "south" | "east" | "west", position: number) => void
   doors?: Array<{
     id: string
@@ -18,16 +19,19 @@ interface RoomProps {
 // Convert feet to meters for the 3D scene (1 foot = 0.3048 meters)
 const FEET_TO_METERS = 0.3048
 
-export function Room({ width, length, doors = [], onSelectDoor }: RoomProps) {
+export function Room({ width, length, height, doors = [], onSelectDoor }: RoomProps) {
   // Convert feet to meters for the 3D scene
   const widthMeters = width * FEET_TO_METERS
   const lengthMeters = length * FEET_TO_METERS
+  const heightMeters = height * FEET_TO_METERS
 
-  const wallHeight = 2.5 * FEET_TO_METERS
   const wallThickness = 0.1 * FEET_TO_METERS
 
+  // Lift the room slightly to hide the grid
+  const roomElevation = 0.01
+
   return (
-    <group>
+    <group position={[0, roomElevation, 0]}>
       {/* Floor - solid to hide grid lines */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[widthMeters, lengthMeters]} />
@@ -35,33 +39,33 @@ export function Room({ width, length, doors = [], onSelectDoor }: RoomProps) {
       </mesh>
 
       {/* Ceiling - optional, can be commented out */}
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, wallHeight, 0]} receiveShadow>
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, heightMeters, 0]} receiveShadow>
         <planeGeometry args={[widthMeters, lengthMeters]} />
         <meshStandardMaterial color="#f8f8f8" transparent opacity={0.5} />
       </mesh>
 
       {/* Walls */}
       {/* North wall (Z-) */}
-      <mesh position={[0, wallHeight / 2, -lengthMeters / 2]} castShadow receiveShadow>
-        <boxGeometry args={[widthMeters, wallHeight, wallThickness]} />
+      <mesh position={[0, heightMeters / 2, -lengthMeters / 2]} castShadow receiveShadow>
+        <boxGeometry args={[widthMeters, heightMeters, wallThickness]} />
         <meshStandardMaterial color="#f5f5f5" transparent opacity={0.9} roughness={0.7} />
       </mesh>
 
       {/* South wall (Z+) */}
-      <mesh position={[0, wallHeight / 2, lengthMeters / 2]} castShadow receiveShadow>
-        <boxGeometry args={[widthMeters, wallHeight, wallThickness]} />
+      <mesh position={[0, heightMeters / 2, lengthMeters / 2]} castShadow receiveShadow>
+        <boxGeometry args={[widthMeters, heightMeters, wallThickness]} />
         <meshStandardMaterial color="#f5f5f5" transparent opacity={0.9} roughness={0.7} />
       </mesh>
 
       {/* West wall (X-) */}
-      <mesh position={[-widthMeters / 2, wallHeight / 2, 0]} rotation={[0, Math.PI / 2, 0]} castShadow receiveShadow>
-        <boxGeometry args={[lengthMeters, wallHeight, wallThickness]} />
+      <mesh position={[-widthMeters / 2, heightMeters / 2, 0]} rotation={[0, Math.PI / 2, 0]} castShadow receiveShadow>
+        <boxGeometry args={[lengthMeters, heightMeters, wallThickness]} />
         <meshStandardMaterial color="#f0f0f0" transparent opacity={0.9} roughness={0.7} />
       </mesh>
 
       {/* East wall (X+) */}
-      <mesh position={[widthMeters / 2, wallHeight / 2, 0]} rotation={[0, Math.PI / 2, 0]} castShadow receiveShadow>
-        <boxGeometry args={[lengthMeters, wallHeight, wallThickness]} />
+      <mesh position={[widthMeters / 2, heightMeters / 2, 0]} rotation={[0, Math.PI / 2, 0]} castShadow receiveShadow>
+        <boxGeometry args={[lengthMeters, heightMeters, wallThickness]} />
         <meshStandardMaterial color="#f0f0f0" transparent opacity={0.9} roughness={0.7} />
       </mesh>
 
@@ -130,4 +134,3 @@ export function Room({ width, length, doors = [], onSelectDoor }: RoomProps) {
     </group>
   )
 }
-

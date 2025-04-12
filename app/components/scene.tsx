@@ -49,7 +49,7 @@ type HistoryAction = {
 }
 
 // Camera controller to focus on room
-function CameraController({ width, length }: { width: number; length: number }) {
+function CameraController({ width, length, height }: { width: number; length: number; height: number }) {
   const { camera } = useThree()
 
   useEffect(() => {
@@ -57,7 +57,7 @@ function CameraController({ width, length }: { width: number; length: number }) 
     const maxDimension = Math.max(width, length) * FEET_TO_METERS
     camera.position.set(maxDimension, maxDimension * 0.8, maxDimension)
     camera.lookAt(0, 0, 0)
-  }, [camera, width, length])
+  }, [camera, width, length, height])
 
   return null
 }
@@ -68,6 +68,7 @@ export default function Scene() {
   const [selectedDoorId, setSelectedDoorId] = useState<string | null>(null)
   const [roomWidth, setRoomWidth] = useState<number>(0)
   const [roomLength, setRoomLength] = useState<number>(0)
+  const [roomHeight, setRoomHeight] = useState<number>(8) // Default 8 feet
   const [showRoomModal, setShowRoomModal] = useState<boolean>(true)
   const [showDoorModal, setShowDoorModal] = useState<boolean>(false)
   const [roomCreated, setRoomCreated] = useState<boolean>(false)
@@ -78,6 +79,7 @@ export default function Scene() {
   const [canRedo, setCanRedo] = useState<boolean>(false)
   const planeRef = useRef<THREE.Mesh>(null)
   const canvasRef = useRef<HTMLDivElement>(null)
+  const transformControlRef = useRef<any>(null)
 
   // Add action to history
   const addToHistory = (action: HistoryAction) => {
@@ -255,9 +257,10 @@ export default function Scene() {
     }
   }, [furniture, selectedId, doors, selectedDoorId, roomWidth, roomLength])
 
-  const handleCreateRoom = (width: number, length: number) => {
+  const handleCreateRoom = (width: number, length: number, height: number) => {
     setRoomWidth(width)
     setRoomLength(length)
+    setRoomHeight(height)
     setRoomCreated(true)
   }
 
@@ -315,6 +318,23 @@ export default function Scene() {
   }
 
   const handleSelect = (index: number) => {
+    // Store the current position before deselecting
+    if (selectedId !== null && selectedId !== index) {
+      // Make sure we capture the final position from the transform control
+      if (transformControlRef.current) {
+        const obj = transformControlRef.current.object
+        if (obj) {
+          const currentFurniture = [...furniture]
+          currentFurniture[selectedId] = {
+            ...currentFurniture[selectedId],
+            position: [obj.position.x, obj.position.y, obj.position.z] as [number, number, number],
+            rotation: [obj.rotation.x, obj.rotation.y, obj.rotation.z] as [number, number, number],
+          }
+          setFurniture(currentFurniture)
+        }
+      }
+    }
+
     // Deselect any selected door
     setSelectedDoorId(null)
     setDoors(doors.map((door) => ({ ...door, selected: false })))
@@ -555,7 +575,7 @@ export default function Scene() {
 
       <div ref={canvasRef} className="w-full h-full relative" onDragOver={handleDragOver} onDrop={handleDrop}>
         <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }}>
-          {roomCreated && <CameraController width={roomWidth} length={roomLength} />}
+          {roomCreated && <CameraController width={roomWidth} length={roomLength} height={roomHeight} />}
 
           <PerspectiveCamera makeDefault position={[5, 5, 5]} />
           <OrbitControls
@@ -586,7 +606,15 @@ export default function Scene() {
           />
 
           {/* Show the room if created */}
-          {roomCreated && <Room width={roomWidth} length={roomLength} doors={doors} onSelectDoor={handleSelectDoor} />}
+          {roomCreated && (
+            <Room
+              width={roomWidth}
+              length={roomLength}
+              height={roomHeight}
+              doors={doors}
+              onSelectDoor={handleSelectDoor}
+            />
+          )}
 
           <ambientLight intensity={0.5} />
           <directionalLight position={[2.5, 8, 5]} intensity={1.5} castShadow shadow-mapSize={2048}>
@@ -598,6 +626,7 @@ export default function Scene() {
             <group key={`${item.id}-${index}`}>
               {item.selected && (
                 <TransformControls
+                  ref={transformControlRef}
                   mode="translate"
                   showX={true}
                   showY={false}
@@ -680,4 +709,3 @@ export default function Scene() {
     </>
   )
 }
-

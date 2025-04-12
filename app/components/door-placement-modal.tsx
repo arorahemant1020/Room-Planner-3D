@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,14 +19,22 @@ interface DoorPlacementModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (wall: "north" | "south" | "east" | "west", position: number, width: number, height: number) => void
+  roomHeight: number
 }
 
-export function DoorPlacementModal({ open, onOpenChange, onSubmit }: DoorPlacementModalProps) {
+export function DoorPlacementModal({ open, onOpenChange, onSubmit, roomHeight }: DoorPlacementModalProps) {
   const [wall, setWall] = useState<"north" | "south" | "east" | "west">("south")
   const [position, setPosition] = useState(0.5) // 0-1 position along the wall
   const [width, setWidth] = useState(3) // in feet
   const [height, setHeight] = useState(7) // in feet
   const [error, setError] = useState("")
+
+  // Update height if it exceeds room height when roomHeight changes
+  useEffect(() => {
+    if (height > roomHeight - 0.5) {
+      setHeight(Math.max(6, roomHeight - 0.5))
+    }
+  }, [roomHeight])
 
   const handleSubmit = () => {
     if (width < 2 || width > 6) {
@@ -34,8 +42,8 @@ export function DoorPlacementModal({ open, onOpenChange, onSubmit }: DoorPlaceme
       return
     }
 
-    if (height < 6 || height > 8) {
-      setError("Door height must be between 6 and 8 feet")
+    if (height < 6 || height > roomHeight - 0.5) {
+      setError(`Door height must be between 6 and ${roomHeight - 0.5} feet (0.5 feet below ceiling)`)
       return
     }
 
@@ -114,7 +122,7 @@ export function DoorPlacementModal({ open, onOpenChange, onSubmit }: DoorPlaceme
               onChange={(e) => setHeight(Number(e.target.value))}
               className="col-span-3"
               min="6"
-              max="8"
+              max={roomHeight - 0.5}
               step="0.5"
             />
           </div>
@@ -128,4 +136,3 @@ export function DoorPlacementModal({ open, onOpenChange, onSubmit }: DoorPlaceme
     </Dialog>
   )
 }
-

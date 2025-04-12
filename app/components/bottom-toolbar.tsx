@@ -20,6 +20,7 @@ interface BottomToolbarProps {
   doorWidth?: number
   doorHeight?: number
   doorPosition?: number
+  roomHeight?: number
 }
 
 export function BottomToolbar({
@@ -36,6 +37,7 @@ export function BottomToolbar({
   doorWidth = 3,
   doorHeight = 7,
   doorPosition = 0.5,
+  roomHeight = 8,
 }: BottomToolbarProps) {
   const [activeTab, setActiveTab] = useState<"move" | "resize" | "rotate" | null>("move")
 
@@ -174,7 +176,7 @@ export function BottomToolbar({
             <Slider
               value={[doorHeight || 7]}
               min={6}
-              max={8}
+              max={roomHeight - 0.5}
               step={0.5}
               onValueChange={(value) => onResizeDoor(doorWidth || 3, value[0])}
               className="flex-1"
@@ -203,4 +205,3 @@ export function BottomToolbar({
     </div>
   )
 }
-

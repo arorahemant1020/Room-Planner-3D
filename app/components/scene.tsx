@@ -66,8 +66,8 @@ export default function Scene() {
   const [furniture, setFurniture] = useState<FurnitureItem[]>([])
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [selectedDoorId, setSelectedDoorId] = useState<string | null>(null)
-  const [roomWidth, setRoomWidth] = useState<number>(0)
-  const [roomLength, setRoomLength] = useState<number>(0)
+  const [roomWidth, setRoomWidth] = useState<number>(12)
+  const [roomLength, setRoomLength] = useState<number>(15)
   const [roomHeight, setRoomHeight] = useState<number>(8) // Default 8 feet
   const [showRoomModal, setShowRoomModal] = useState<boolean>(true)
   const [showDoorModal, setShowDoorModal] = useState<boolean>(false)
@@ -262,6 +262,21 @@ export default function Scene() {
     setRoomLength(length)
     setRoomHeight(height)
     setRoomCreated(true)
+
+    // Check if any existing doors exceed the new room height and adjust them
+    if (doors.length > 0) {
+      const adjustedDoors = doors.map((door) => {
+        // Ensure all doors are strictly less than the new room height
+        if (door.height >= height) {
+          return { ...door, height: Math.max(6, height - 0.5) }
+        }
+        return door
+      })
+
+      if (JSON.stringify(doors) !== JSON.stringify(adjustedDoors)) {
+        setDoors(adjustedDoors)
+      }
+    }
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -476,12 +491,21 @@ export default function Scene() {
     width: number,
     height: number,
   ) => {
+    // Ensure door height is strictly less than room height
+    const doorHeight = Math.min(height, roomHeight - 0.5)
+
+    // Additional validation to guarantee the condition
+    if (doorHeight >= roomHeight) {
+      console.warn("Door height must be less than room height")
+      return
+    }
+
     const newDoor: Door = {
       id: generateUUID(),
       wall,
       position,
       width,
-      height,
+      height: doorHeight,
       selected: false,
     }
 
@@ -521,12 +545,21 @@ export default function Scene() {
 
   const handleResizeDoor = (width: number, height: number) => {
     if (selectedDoorId) {
+      // Ensure door height is strictly less than room height
+      const doorHeight = Math.min(height, roomHeight - 0.5)
+
+      // Additional validation to guarantee the condition
+      if (doorHeight >= roomHeight) {
+        console.warn("Door height must be less than room height")
+        return
+      }
+
       const newDoors = doors.map((door) => {
         if (door.id === selectedDoorId) {
           return {
             ...door,
             width,
-            height,
+            height: doorHeight,
           }
         }
         return door
@@ -571,7 +604,12 @@ export default function Scene() {
     <>
       <RoomDimensionsModal open={showRoomModal} onOpenChange={setShowRoomModal} onSubmit={handleCreateRoom} />
 
-      <DoorPlacementModal open={showDoorModal} onOpenChange={setShowDoorModal} onSubmit={handleCreateDoor} />
+      <DoorPlacementModal
+        open={showDoorModal}
+        onOpenChange={setShowDoorModal}
+        onSubmit={handleCreateDoor}
+        roomHeight={roomHeight}
+      />
 
       <div ref={canvasRef} className="w-full h-full relative" onDragOver={handleDragOver} onDrop={handleDrop}>
         <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }}>
@@ -703,6 +741,7 @@ export default function Scene() {
             doorWidth={selectedDoor.width}
             doorHeight={selectedDoor.height}
             doorPosition={selectedDoor.position}
+            roomHeight={roomHeight}
           />
         )}
       </div>

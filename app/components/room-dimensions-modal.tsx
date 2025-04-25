@@ -57,14 +57,16 @@ export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimens
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-[#fbf3e3] text-[#3b2e22]">
         <DialogHeader>
-          <DialogTitle>Room Dimensions</DialogTitle>
-          <DialogDescription>Enter the dimensions of your room in feet.</DialogDescription>
+          <DialogTitle className="text-[#3b2e22]">Room Dimensions</DialogTitle>
+          <DialogDescription className="text-[#3b2e22]/70">
+            Enter the dimensions of your room in feet.
+          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="width" className="text-right">
+            <Label htmlFor="width" className="text-right text-[#3b2e22]">
               Width (ft)
             </Label>
             <Input
@@ -72,14 +74,14 @@ export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimens
               type="number"
               value={width}
               onChange={(e) => setWidth(e.target.value)}
-              className="col-span-3"
+              className="col-span-3 border-[#3b2e22]/30 focus-visible:ring-[#3b2e22]"
               min="1"
               max="50"
               step="0.5"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="length" className="text-right">
+            <Label htmlFor="length" className="text-right text-[#3b2e22]">
               Length (ft)
             </Label>
             <Input
@@ -87,14 +89,14 @@ export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimens
               type="number"
               value={length}
               onChange={(e) => setLength(e.target.value)}
-              className="col-span-3"
+              className="col-span-3 border-[#3b2e22]/30 focus-visible:ring-[#3b2e22]"
               min="1"
               max="50"
               step="0.5"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="height" className="text-right">
+            <Label htmlFor="height" className="text-right text-[#3b2e22]">
               Height (ft)
             </Label>
             <Input
@@ -102,7 +104,7 @@ export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimens
               type="number"
               value={height}
               onChange={(e) => setHeight(e.target.value)}
-              className="col-span-3"
+              className="col-span-3 border-[#3b2e22]/30 focus-visible:ring-[#3b2e22]"
               min="6"
               max="20"
               step="0.5"
@@ -111,7 +113,9 @@ export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimens
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
         <DialogFooter>
-          <Button onClick={handleSubmit}>Create Room</Button>
+          <Button onClick={handleSubmit} className="bg-[#3b2e22] text-[#fbf3e3] hover:bg-[#4a3c30]">
+            Create Room
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

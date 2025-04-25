@@ -41,8 +41,11 @@ export function BottomToolbar({
 }: BottomToolbarProps) {
   const [activeTab, setActiveTab] = useState<"move" | "resize" | "rotate" | null>("move")
 
+  // Calculate max door height (0.5 feet below ceiling)
+  const maxDoorHeight = Math.max(6, (roomHeight || 8) - 0.5)
+
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-background border-t p-2 flex flex-col gap-2 z-10">
+    <div className="absolute bottom-0 left-0 right-0 bg-[#3b2e22] border-t border-[#fbf3e3]/30 p-2 flex flex-col gap-2 z-10 text-[#fbf3e3]">
       <div className="flex justify-between items-center">
         <div className="flex gap-2">
           <TooltipProvider>
@@ -52,6 +55,11 @@ export function BottomToolbar({
                   variant={activeTab === "move" ? "default" : "outline"}
                   size="icon"
                   onClick={() => setActiveTab(activeTab === "move" ? null : "move")}
+                  className={
+                    activeTab === "move"
+                      ? "bg-[#fbf3e3] text-[#3b2e22] hover:bg-[#fbf3e3]/90"
+                      : "border-[#fbf3e3] text-[#fbf3e3] hover:bg-[#4a3c30]"
+                  }
                 >
                   <Move className="h-4 w-4" />
                 </Button>
@@ -69,6 +77,11 @@ export function BottomToolbar({
                   variant={activeTab === "resize" ? "default" : "outline"}
                   size="icon"
                   onClick={() => setActiveTab(activeTab === "resize" ? null : "resize")}
+                  className={
+                    activeTab === "resize"
+                      ? "bg-[#fbf3e3] text-[#3b2e22] hover:bg-[#fbf3e3]/90"
+                      : "border-[#fbf3e3] text-[#fbf3e3] hover:bg-[#4a3c30]"
+                  }
                 >
                   <Maximize className="h-4 w-4" />
                 </Button>
@@ -87,6 +100,11 @@ export function BottomToolbar({
                     variant={activeTab === "rotate" ? "default" : "outline"}
                     size="icon"
                     onClick={() => setActiveTab(activeTab === "rotate" ? null : "rotate")}
+                    className={
+                      activeTab === "rotate"
+                        ? "bg-[#fbf3e3] text-[#3b2e22] hover:bg-[#fbf3e3]/90"
+                        : "border-[#fbf3e3] text-[#fbf3e3] hover:bg-[#4a3c30]"
+                    }
                   >
                     <RotateCw className="h-4 w-4" />
                   </Button>
@@ -104,7 +122,12 @@ export function BottomToolbar({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={onAddDoor}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={onAddDoor}
+                    className="border-[#fbf3e3] text-[#fbf3e3] hover:bg-[#4a3c30]"
+                  >
                     <Door className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -118,7 +141,12 @@ export function BottomToolbar({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="destructive" size="icon" onClick={isDoor ? onDeleteDoor : onDelete}>
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={isDoor ? onDeleteDoor : onDelete}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -176,9 +204,15 @@ export function BottomToolbar({
             <Slider
               value={[doorHeight || 7]}
               min={6}
-              max={roomHeight - 0.5}
+              max={maxDoorHeight}
               step={0.5}
-              onValueChange={(value) => onResizeDoor(doorWidth || 3, value[0])}
+              onValueChange={(value) => {
+                // Additional validation to ensure door height is always less than room height
+                const newHeight = value[0]
+                if (newHeight < (roomHeight || 8)) {
+                  onResizeDoor(doorWidth || 3, newHeight)
+                }
+              }}
               className="flex-1"
             />
           </div>
@@ -199,7 +233,7 @@ export function BottomToolbar({
         </div>
       )}
 
-      <div className="text-xs text-muted-foreground text-center mt-1">
+      <div className="text-xs text-[#fbf3e3]/70 text-center mt-1">
         Use arrow keys to move {isDoor ? "door" : "furniture"}
       </div>
     </div>

@@ -6,9 +6,11 @@ import { Inter } from "next/font/google"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "3D Room Planner",
+  title: "StyloSpace",
   description: "A 3D room planner application",
-    generator: 'v0.dev'
+  icons: {
+    icon: "/logo.png",
+  },
 }
 
 export default function RootLayout({

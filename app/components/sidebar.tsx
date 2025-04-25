@@ -26,17 +26,29 @@ export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   return (
-    <div className={`relative border-r bg-background transition-all duration-300 ${isCollapsed ? "w-16" : "w-80"}`}>
+    <div
+      className={`relative border-r bg-[#3b2e22] text-[#fbf3e3] transition-all duration-300 ${isCollapsed ? "w-16" : "w-80"}`}
+    >
       <div className="flex flex-col h-full">
         <div className="p-4">
           <h2 className={`font-semibold ${isCollapsed ? "hidden" : "block"}`}>Furniture</h2>
         </div>
-        <Separator />
+        <Separator className="bg-[#fbf3e3]/30" />
         <Tabs defaultValue="Living Room" className="flex-1">
           <div className="p-4">
-            <TabsList className={`${isCollapsed ? "hidden" : "block"}`}>
-              <TabsTrigger value="Living Room">Living Room</TabsTrigger>
-              <TabsTrigger value="Bedroom">Bedroom</TabsTrigger>
+            <TabsList className={`${isCollapsed ? "hidden" : "block"} bg-[#4a3c30]`}>
+              <TabsTrigger
+                value="Living Room"
+                className="data-[state=active]:bg-[#fbf3e3] data-[state=active]:text-[#3b2e22]"
+              >
+                Living Room
+              </TabsTrigger>
+              <TabsTrigger
+                value="Bedroom"
+                className="data-[state=active]:bg-[#fbf3e3] data-[state=active]:text-[#3b2e22]"
+              >
+                Bedroom
+              </TabsTrigger>
             </TabsList>
           </div>
           <ScrollArea className="flex-1">
@@ -46,7 +58,7 @@ export function Sidebar() {
                   <Button
                     key={item.id}
                     variant="ghost"
-                    className={`w-full justify-start gap-2 ${isCollapsed ? "px-4" : ""}`}
+                    className={`w-full justify-start gap-2 text-[#fbf3e3] hover:bg-[#4a3c30] ${isCollapsed ? "px-4" : ""}`}
                     draggable
                     onDragStart={(e) => {
                       e.dataTransfer.setData("furniture", item.id)
@@ -64,7 +76,7 @@ export function Sidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute -right-4 top-4 z-10 bg-background border rounded-full"
+        className="absolute -right-4 top-4 z-10 bg-[#3b2e22] border border-[#fbf3e3]/30 rounded-full text-[#fbf3e3] hover:bg-[#4a3c30]"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         <ChevronLeft className={`w-4 h-4 transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
@@ -72,4 +84,3 @@ export function Sidebar() {
     </div>
   )
 }
-

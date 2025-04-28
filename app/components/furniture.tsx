@@ -20,27 +20,27 @@ const FURNITURE_CONFIGS: Record<
   sofa: {
     relativeScale: [0.2, 0.1, 0.1], // 2ft x 1ft x 1ft in a 10ft room
     yOffset: 0,
-    modelPath: "/assets/3d/sofa.glb", // Add sofa GLB file location here
+    modelPath: "/assets/3d/sofa.glb", 
   },
   chair: {
-    relativeScale: [0.1, 0.1, 0.1], // 1ft x 1ft x 1ft in a 10ft room
+    relativeScale: [0.04, 0.04, 0.04], // 1ft x 1ft x 1ft in a 10ft room
     yOffset: 0,
-    modelPath: "/assets/3d/chair.glb", // Add chair GLB file location here
+    modelPath: "/assets/3d/chair.glb", 
   },
   table: {
-    relativeScale: [0.15, 0.08, 0.15], // 1.5ft x 0.8ft x 1.5ft in a 10ft room
+    relativeScale: [1, 1, 1], // 1.5ft x 0.8ft x 1.5ft in a 10ft room
     yOffset: 0,
-    modelPath: "/assets/3d/table.glb", // Add table GLB file location here
+    modelPath: "/assets/3d/table.glb", 
   },
   bed: {
     relativeScale: [0.35, 0.05, 0.2], // 3.5ft x 0.5ft x 2ft in a 10ft room
     yOffset: 0,
-    modelPath: "/assets/3d/bed.glb", // Add bed GLB file location here
+    modelPath: "/assets/3d/bed.glb", 
   },
   lamp: {
     relativeScale: [0.05, 0.15, 0.05], // 0.5ft x 1.5ft x 0.5ft in a 10ft room
     yOffset: 0,
-    modelPath: "/assets/3d/lamp.glb", // Add lamp GLB file location here
+    modelPath: "/assets/3d/lamp.glb", 
   },
 }
 

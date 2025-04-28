@@ -186,7 +186,7 @@ export default function Scene() {
             break
         }
 
-        // Clamp position to room boundaries
+        // room boundaries
         const roomWidthMeters = roomWidth * FEET_TO_METERS
         const roomLengthMeters = roomLength * FEET_TO_METERS
         const margin = 0.5 * FEET_TO_METERS
@@ -215,7 +215,7 @@ export default function Scene() {
 
       // Handle door movement with arrow keys
       if (selectedDoorId !== null) {
-        const step = 0.05 // Move 5% along the wall at a time
+        const step = 0.05 
         const selectedDoor = doors.find((door) => door.id === selectedDoorId)
 
         if (!selectedDoor) return
@@ -263,10 +263,10 @@ export default function Scene() {
     setRoomHeight(height)
     setRoomCreated(true)
 
-    // Check if any existing doors exceed the new room height and adjust them
+    
     if (doors.length > 0) {
       const adjustedDoors = doors.map((door) => {
-        // Ensure all doors are strictly less than the new room height
+        
         if (door.height >= height) {
           return { ...door, height: Math.max(6, height - 0.5) }
         }
@@ -290,13 +290,11 @@ export default function Scene() {
     const furnitureId = e.dataTransfer.getData("furniture")
     if (!furnitureId) return
 
-    // Get the canvas relative coordinates
     const canvas = e.currentTarget as HTMLElement
     const rect = canvas.getBoundingClientRect()
     const x = ((e.clientX - rect.left) / canvas.clientWidth) * 2 - 1
     const y = -((e.clientY - rect.top) / canvas.clientHeight) * 2 + 1
 
-    // Calculate position based on room dimensions (in meters)
     const roomWidthMeters = roomWidth * FEET_TO_METERS
     const roomLengthMeters = roomLength * FEET_TO_METERS
 
@@ -315,8 +313,8 @@ export default function Scene() {
       ...furniture,
       {
         id: furnitureId,
-        position: [clampedX, 0.01, clampedZ] as [number, number, number], // Explicitly cast to tuple
-        rotation: [0, 0, 0] as [number, number, number], // Explicitly cast to tuple
+        position: [clampedX, 0.01, clampedZ] as [number, number, number], 
+        rotation: [0, 0, 0] as [number, number, number], 
         selected: false,
         scale: 1.0, // Default scale
       },
@@ -407,8 +405,6 @@ export default function Scene() {
 
     setFurniture(newFurniture)
 
-    // We don't want to add to history for every small movement
-    // This would be better with a debounce, but for simplicity:
     if (transform.position) {
       addToHistory({
         type: "move",

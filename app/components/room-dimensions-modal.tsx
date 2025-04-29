@@ -20,9 +20,9 @@ interface RoomDimensionsModalProps {
 }
 
 export function RoomDimensionsModal({ open, onOpenChange, onSubmit }: RoomDimensionsModalProps) {
-  const [width, setWidth] = useState("12")
-  const [length, setLength] = useState("15")
-  const [height, setHeight] = useState("8")
+  const [width, setWidth] = useState("10")
+  const [length, setLength] = useState("10")
+  const [height, setHeight] = useState("4")
   const [error, setError] = useState("")
 
   const handleSubmit = () => {

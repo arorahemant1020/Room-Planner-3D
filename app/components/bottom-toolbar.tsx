@@ -58,7 +58,7 @@ export function BottomToolbar({
                   className={
                     activeTab === "move"
                       ? "bg-[#fbf3e3] text-[#3b2e22] hover:bg-[#fbf3e3]/90"
-                      : "border-[#fbf3e3] text-[#fbf3e3] hover:bg-[#4a3c30]"
+                      : "bg-[#fbf3e3] border-[#3b2e22] text-[#3b2e22] hover:bg-[#4a3c30] hover:text-[#fbf3e3]"
                   }
                 >
                   <Move className="h-4 w-4" />
@@ -80,7 +80,7 @@ export function BottomToolbar({
                   className={
                     activeTab === "resize"
                       ? "bg-[#fbf3e3] text-[#3b2e22] hover:bg-[#fbf3e3]/90"
-                      : "border-[#fbf3e3] text-[#fbf3e3] hover:bg-[#4a3c30]"
+                      : "bg-[#fbf3e3] border-[#3b2e22] text-[#3b2e22] hover:bg-[#4a3c30] hover:text-[#fbf3e3]"
                   }
                 >
                   <Maximize className="h-4 w-4" />
@@ -102,8 +102,8 @@ export function BottomToolbar({
                     onClick={() => setActiveTab(activeTab === "rotate" ? null : "rotate")}
                     className={
                       activeTab === "rotate"
-                        ? "bg-[#fbf3e3] text-[#3b2e22] hover:bg-[#fbf3e3]/90"
-                        : "border-[#fbf3e3] text-[#fbf3e3] hover:bg-[#4a3c30]"
+                        ? "bg-[#fbf3e3] text-[#3b2e22] hover:bg-[#fbf3e3]/45"
+                        : "bg-[#fbf3e3] border-[#3b2e22] text-[#3b2e22] hover:bg-[#4a3c30] hover:text-[#fbf3e3]"
                     }
                   >
                     <RotateCw className="h-4 w-4" />
@@ -126,7 +126,7 @@ export function BottomToolbar({
                     variant="outline"
                     size="icon"
                     onClick={onAddDoor}
-                    className="border-[#fbf3e3] text-[#fbf3e3] hover:bg-[#4a3c30]"
+                    className="bg-[#fbf3e3] border-[#fbf3e3] text-[#3b2e22] hover:bg-[#4a3c30] hover:text-[#fbf3e3]"
                   >
                     <Door className="h-4 w-4" />
                   </Button>

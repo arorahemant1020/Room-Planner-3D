@@ -18,7 +18,7 @@ const FURNITURE_CONFIGS: Record<
   }
 > = {
   sofa: {
-    relativeScale: [0.2, 0.1, 0.1], // 2ft x 1ft x 1ft in a 10ft room
+    relativeScale: [0.065, 0.052, 0.055], // 2ft x 1ft x 1ft in a 10ft room
     yOffset: 0,
     modelPath: "/assets/3d/sofa.glb", 
   },
@@ -33,7 +33,7 @@ const FURNITURE_CONFIGS: Record<
     modelPath: "/assets/3d/table.glb", 
   },
   bed: {
-    relativeScale: [0.35, 0.05, 0.2], // 3.5ft x 0.5ft x 2ft in a 10ft room
+    relativeScale: [0.03, 0.04, 0.03], // 3.5ft x 0.5ft x 2ft in a 10ft room
     yOffset: 0,
     modelPath: "/assets/3d/bed.glb", 
   },
@@ -66,8 +66,8 @@ export function Furniture({
   const meshRef = useRef<THREE.Group>(null)
   const config = FURNITURE_CONFIGS[type as keyof typeof FURNITURE_CONFIGS]
 
-  // Load the model directly from the config
-  const { scene } = useGLTF(config?.modelPath || "/assets/3d/duck.glb")
+
+  const { scene } = useGLTF(config?.modelPath || "/assets/3d/bed.glb")
 
   // Calculate the actual scale based on room dimensions
   // This adjusts the furniture size relative to the room size
@@ -79,7 +79,7 @@ export function Furniture({
     (config?.relativeScale.map((s) => s * scaleFactor * FEET_TO_METERS * scale) as [number, number, number]) ||
     ([0.1, 0.1, 0.1] as [number, number, number])
 
-  // Clone the model for each instance
+
   useEffect(() => {
     if (meshRef.current) {
       const clone = scene.clone()

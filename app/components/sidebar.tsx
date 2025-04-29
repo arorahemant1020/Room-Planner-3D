@@ -17,7 +17,7 @@ const furnitureItems = {
   ],
   Bedroom: [
     { id: "bed", name: "Bed", icon: Bed },
-    { id: "bedside-table", name: "Bedside Table", icon: Table },
+    { id: "table", name: "Bedside Table", icon: Table },
     { id: "desk-lamp", name: "Desk Lamp", icon: Lamp },
   ],
 }

@@ -38,7 +38,7 @@ export function Room({ width, length, height, doors = [], onSelectDoor }: RoomPr
         <meshStandardMaterial color="#e0e0e0" roughness={0.8} />
       </mesh>
 
-      {/* Ceiling - optional, can be commented out */}
+      
       <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, heightMeters, 0]} receiveShadow>
         <planeGeometry args={[widthMeters, lengthMeters]} />
         <meshStandardMaterial color="#f8f8f8" transparent opacity={0.5} />
@@ -71,7 +71,6 @@ export function Room({ width, length, height, doors = [], onSelectDoor }: RoomPr
 
       {/* Render doors */}
       {doors.map((door) => {
-        // Convert door dimensions to meters
         const doorWidthMeters = door.width * FEET_TO_METERS
         const doorHeightMeters = door.height * FEET_TO_METERS
 

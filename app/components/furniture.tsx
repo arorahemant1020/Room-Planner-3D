@@ -28,7 +28,7 @@ const FURNITURE_CONFIGS: Record<
     modelPath: "/assets/3d/chair.glb", 
   },
   table: {
-    relativeScale: [1, 1, 1], // 1.5ft x 0.8ft x 1.5ft in a 10ft room
+    relativeScale: [10, 10, 10], // 1.5ft x 0.8ft x 1.5ft in a 10ft room
     yOffset: 0,
     modelPath: "/assets/3d/table.glb", 
   },

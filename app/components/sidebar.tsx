@@ -39,13 +39,13 @@ export function Sidebar() {
             <TabsList className={`${isCollapsed ? "hidden" : "block"} bg-[#4a3c30]`}>
               <TabsTrigger
                 value="Living Room"
-                className="data-[state=active]:bg-[#fbf3e3] data-[state=active]:text-[#3b2e22]"
+                className="data-[state=active]:bg-[#fbf3e3] data-[state=active]:text-[#3b2e22] data-[state=inactive]:text-[#fbf3e3]"
               >
                 Living Room
               </TabsTrigger>
               <TabsTrigger
                 value="Bedroom"
-                className="data-[state=active]:bg-[#fbf3e3] data-[state=active]:text-[#3b2e22]"
+                className="data-[state=active]:bg-[#fbf3e3] data-[state=active]:text-[#3b2e22] data-[state=inactive]:text-[#fbf3e3]"
               >
                 Bedroom
               </TabsTrigger>

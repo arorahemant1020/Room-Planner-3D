@@ -36,18 +36,18 @@ export function DoorPlacementModal({ open, onOpenChange, onSubmit, roomHeight = 
   useEffect(() => {
     // Ensure door height is always strictly less than room height
     if (height >= roomHeight) {
-      setHeight(Math.max(6, roomHeight - 0.5))
+      setHeight(Math.max(3, roomHeight - 0.5))
     }
   }, [roomHeight, height])
 
   const handleSubmit = () => {
-    if (width < 2 || width > 6) {
-      setError("Door width must be between 2 and 6 feet")
+    if (width < 1 || width > 6) {
+      setError("Door width must be between 1 and 6 feet")
       return
     }
 
     // Strict validation to ensure door height is ALWAYS less than room height
-    if (height < 6 || height >= roomHeight) {
+    if (height < 1 || height >= roomHeight) {
       setError(`Door height must be between 6 and less than ${roomHeight} feet (room height)`)
       return
     }
@@ -111,7 +111,7 @@ export function DoorPlacementModal({ open, onOpenChange, onSubmit, roomHeight = 
               value={width}
               onChange={(e) => setWidth(Number(e.target.value))}
               className="col-span-3 border-[#3b2e22]/30 focus-visible:ring-[#3b2e22]"
-              min="2"
+              min="1"
               max="6"
               step="0.5"
             />
@@ -127,7 +127,7 @@ export function DoorPlacementModal({ open, onOpenChange, onSubmit, roomHeight = 
               value={height}
               onChange={(e) => setHeight(Number(e.target.value))}
               className="col-span-3 border-[#3b2e22]/30 focus-visible:ring-[#3b2e22]"
-              min="6"
+              min="1"
               max={maxDoorHeight}
               step="0.5"
             />

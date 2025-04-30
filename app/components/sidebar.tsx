@@ -12,13 +12,13 @@ const furnitureItems = {
   "Living Room": [
     { id: "sofa", name: "Sofa", icon: Sofa },
     { id: "chair", name: "Chair", icon: Chair },
-    { id: "table", name: "Coffee Table", icon: Table },
-    { id: "lamp", name: "Floor Lamp", icon: Lamp },
+    { id: "table", name: "Study Table", icon: Table },
+    // { id: "lamp", name: "Floor Lamp", icon: Lamp },
   ],
   Bedroom: [
     { id: "bed", name: "Bed", icon: Bed },
-    { id: "table", name: "Bedside Table", icon: Table },
-    { id: "desk-lamp", name: "Desk Lamp", icon: Lamp },
+    { id: "table", name: "Study Table", icon: Table },
+    // { id: "desk-lamp", name: "Desk Lamp", icon: Lamp },
   ],
 }
 

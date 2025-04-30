@@ -37,11 +37,11 @@ const FURNITURE_CONFIGS: Record<
     yOffset: 0,
     modelPath: "/assets/3d/bed.glb", 
   },
-  lamp: {
-    relativeScale: [0.05, 0.15, 0.05], // 0.5ft x 1.5ft x 0.5ft in a 10ft room
-    yOffset: 0,
-    modelPath: "/assets/3d/lamp.glb", 
-  },
+  // lamp: {
+  //   relativeScale: [0.05, 0.15, 0.05], // 0.5ft x 1.5ft x 0.5ft in a 10ft room
+  //   yOffset: 0,
+  //   modelPath: "/assets/3d/lamp.glb", 
+  // },
 }
 
 interface FurnitureProps {

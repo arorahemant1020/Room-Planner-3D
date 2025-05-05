@@ -337,28 +337,38 @@ export default function Scene() {
       if (transformControlRef.current) {
         const obj = transformControlRef.current.object
         if (obj) {
+          // Create a new furniture array with the updated position
           const currentFurniture = [...furniture]
           currentFurniture[selectedId] = {
             ...currentFurniture[selectedId],
             position: [obj.position.x, obj.position.y, obj.position.z] as [number, number, number],
             rotation: [obj.rotation.x, obj.rotation.y, obj.rotation.z] as [number, number, number],
           }
+          
+          // Update the furniture state with the new positions
           setFurniture(currentFurniture)
+          
+          // Add to history
+          addToHistory({
+            type: "move",
+            furniture: currentFurniture,
+            doors,
+          })
         }
       }
     }
-
+  
     // Deselect any selected door
     setSelectedDoorId(null)
     setDoors(doors.map((door) => ({ ...door, selected: false })))
-
+  
     // Select or deselect furniture
     setSelectedId(selectedId === index ? null : index)
     setFurniture(
       furniture.map((item, i) => ({
         ...item,
         selected: i === index && selectedId !== index,
-      })),
+      }))
     )
   }
 

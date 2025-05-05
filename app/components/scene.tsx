@@ -81,6 +81,10 @@ export default function Scene() {
   const canvasRef = useRef<HTMLDivElement>(null)
   const transformControlRef = useRef<any>(null)
 
+  // Add new state for transform controls
+  const [transformPosition, setTransformPosition] = useState<[number, number, number]>([0, 0, 0])
+  const [transformRotation, setTransformRotation] = useState<[number, number, number]>([0, 0, 0])
+
   // Add action to history
   const addToHistory = (action: HistoryAction) => {
     // If we're not at the end of the history, remove future actions
@@ -155,6 +159,60 @@ export default function Scene() {
     }
   }, [history, historyIndex])
 
+  // Update transform position and rotation when selection changes
+  useEffect(() => {
+    if (selectedId !== null && furniture[selectedId]) {
+      setTransformPosition(furniture[selectedId].position)
+      setTransformRotation(furniture[selectedId].rotation)
+    }
+  }, [selectedId, furniture])
+
+  // Commit transform changes on mouse up
+  useEffect(() => {
+    const handleMouseUp = () => {
+      if (selectedId !== null) {
+        commitTransform()
+      }
+    }
+
+    window.addEventListener("mouseup", handleMouseUp)
+
+    return () => {
+      window.removeEventListener("mouseup", handleMouseUp)
+    }
+  }, [selectedId, transformPosition, transformRotation])
+
+  // Function to commit transform changes to furniture state
+  const commitTransform = () => {
+    if (selectedId !== null) {
+      const newFurniture = furniture.map((item, i) => {
+        if (i === selectedId) {
+          return {
+            ...item,
+            position: transformPosition,
+            rotation: transformRotation,
+          }
+        }
+        return item
+      })
+
+      // Only update if position or rotation has changed
+      if (
+        JSON.stringify(furniture[selectedId].position) !== JSON.stringify(transformPosition) ||
+        JSON.stringify(furniture[selectedId].rotation) !== JSON.stringify(transformRotation)
+      ) {
+        setFurniture(newFurniture)
+
+        // Add to history
+        addToHistory({
+          type: "move",
+          furniture: newFurniture,
+          doors,
+        })
+      }
+    }
+  }
+
   // Set up keyboard event listeners
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -165,7 +223,7 @@ export default function Scene() {
 
         if (!selectedFurniture) return
 
-        const newPosition: [number, number, number] = [...selectedFurniture.position] as [number, number, number]
+        const newPosition: [number, number, number] = [...transformPosition] as [number, number, number]
 
         switch (e.key) {
           case "ArrowUp":
@@ -197,25 +255,15 @@ export default function Scene() {
           Math.min(roomLengthMeters / 2 - margin, newPosition[2]),
         )
 
-        // Update furniture position
-        if (newPosition[0] !== selectedFurniture.position[0] || newPosition[2] !== selectedFurniture.position[2]) {
-          const newFurniture = furniture.map((item, i) => {
-            if (i === selectedId) {
-              return {
-                ...item,
-                position: newPosition,
-              }
-            }
-            return item
-          })
-
-          setFurniture(newFurniture)
+        // Update transform position
+        if (newPosition[0] !== transformPosition[0] || newPosition[2] !== transformPosition[2]) {
+          setTransformPosition(newPosition)
         }
       }
 
       // Handle door movement with arrow keys
       if (selectedDoorId !== null) {
-        const step = 0.05 
+        const step = 0.05
         const selectedDoor = doors.find((door) => door.id === selectedDoorId)
 
         if (!selectedDoor) return
@@ -255,7 +303,7 @@ export default function Scene() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [furniture, selectedId, doors, selectedDoorId, roomWidth, roomLength])
+  }, [furniture, selectedId, doors, selectedDoorId, roomWidth, roomLength, transformPosition, transformRotation])
 
   const handleCreateRoom = (width: number, length: number, height: number) => {
     setRoomWidth(width)
@@ -263,10 +311,8 @@ export default function Scene() {
     setRoomHeight(height)
     setRoomCreated(true)
 
-    
     if (doors.length > 0) {
       const adjustedDoors = doors.map((door) => {
-        
         if (door.height >= height) {
           return { ...door, height: Math.max(6, height - 0.5) }
         }
@@ -313,8 +359,8 @@ export default function Scene() {
       ...furniture,
       {
         id: furnitureId,
-        position: [clampedX, 0.01, clampedZ] as [number, number, number], 
-        rotation: [0, 0, 0] as [number, number, number], 
+        position: [clampedX, 0.01, clampedZ] as [number, number, number],
+        rotation: [0, 0, 0] as [number, number, number],
         selected: false,
         scale: 1.0, // Default scale
       },
@@ -331,48 +377,31 @@ export default function Scene() {
   }
 
   const handleSelect = (index: number) => {
-    // Store the current position before deselecting
+    // Commit any pending transforms for the currently selected item
     if (selectedId !== null && selectedId !== index) {
-      // Make sure we capture the final position from the transform control
-      if (transformControlRef.current) {
-        const obj = transformControlRef.current.object
-        if (obj) {
-          // Create a new furniture array with the updated position
-          const currentFurniture = [...furniture]
-          currentFurniture[selectedId] = {
-            ...currentFurniture[selectedId],
-            position: [obj.position.x, obj.position.y, obj.position.z] as [number, number, number],
-            rotation: [obj.rotation.x, obj.rotation.y, obj.rotation.z] as [number, number, number],
-          }
-          
-          // Update the furniture state with the new positions
-          setFurniture(currentFurniture)
-          
-          // Add to history
-          addToHistory({
-            type: "move",
-            furniture: currentFurniture,
-            doors,
-          })
-        }
-      }
+      commitTransform()
     }
-  
+
     // Deselect any selected door
     setSelectedDoorId(null)
     setDoors(doors.map((door) => ({ ...door, selected: false })))
-  
+
     // Select or deselect furniture
     setSelectedId(selectedId === index ? null : index)
     setFurniture(
       furniture.map((item, i) => ({
         ...item,
         selected: i === index && selectedId !== index,
-      }))
+      })),
     )
   }
 
   const handleSelectDoor = (id: string) => {
+    // Commit any pending transforms for the currently selected furniture
+    if (selectedId !== null) {
+      commitTransform()
+    }
+
     // Deselect any selected furniture
     setSelectedId(null)
     setFurniture(furniture.map((item) => ({ ...item, selected: false })))
@@ -385,6 +414,31 @@ export default function Scene() {
         selected: door.id === id && selectedDoorId !== id,
       })),
     )
+  }
+
+  const handleTransformChange = (e?: THREE.Event) => {
+    if (!e || selectedId === null) return
+
+    const target = e.target as any
+    if (target && target.object) {
+      const obj = target.object as THREE.Object3D
+
+      // Get new position and rotation
+      const newPosition = [obj.position.x, obj.position.y, obj.position.z] as [number, number, number]
+      const newRotation = [obj.rotation.x, obj.rotation.y, obj.rotation.z] as [number, number, number]
+
+      // Apply room boundary constraints
+      const roomWidthMeters = roomWidth * FEET_TO_METERS
+      const roomLengthMeters = roomLength * FEET_TO_METERS
+      const margin = 0.5 * FEET_TO_METERS
+
+      newPosition[0] = Math.max(-roomWidthMeters / 2 + margin, Math.min(roomWidthMeters / 2 - margin, newPosition[0]))
+      newPosition[2] = Math.max(-roomLengthMeters / 2 + margin, Math.min(roomLengthMeters / 2 - margin, newPosition[2]))
+
+      // Update transform position and rotation
+      setTransformPosition(newPosition)
+      setTransformRotation(newRotation)
+    }
   }
 
   const handleTransform = (
@@ -466,11 +520,15 @@ export default function Scene() {
     if (selectedId !== null) {
       const angleRadians = (angleDegrees * Math.PI) / 180
 
+      // Update transform rotation first
+      const newRotation: [number, number, number] = [0, angleRadians, 0]
+      setTransformRotation(newRotation)
+
       const newFurniture = furniture.map((item, i) => {
         if (i === selectedId) {
           return {
             ...item,
-            rotation: [0, angleRadians, 0] as [number, number, number],
+            rotation: newRotation,
           }
         }
         return item
@@ -676,28 +734,14 @@ export default function Scene() {
                   showY={false}
                   showZ={true}
                   size={0.5}
-                  position={item.position}
-                  rotation={item.rotation}
-                  onObjectChange={(e?: THREE.Event) => {
-                    if (!e) return
-                    // We need to cast e.target to any since THREE.Event doesn't have the right type definition
-                    const target = e.target as any
-                    if (target && target.object) {
-                      const obj = target.object as THREE.Object3D
-                      handleTransform(
-                        {
-                          position: [obj.position.x, obj.position.y, obj.position.z] as [number, number, number],
-                          rotation: [obj.rotation.x, obj.rotation.y, obj.rotation.z] as [number, number, number],
-                        },
-                        index,
-                      )
-                    }
-                  }}
+                  position={selectedId === index ? transformPosition : item.position}
+                  rotation={selectedId === index ? transformRotation : item.rotation}
+                  onObjectChange={handleTransformChange}
                 >
                   <Furniture
                     type={item.id}
-                    position={item.position}
-                    rotation={item.rotation}
+                    position={selectedId === index ? transformPosition : item.position}
+                    rotation={selectedId === index ? transformRotation : item.rotation}
                     onClick={() => handleSelect(index)}
                     selected={item.selected}
                     roomDimensions={{ width: roomWidth, length: roomLength }}

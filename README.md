@@ -1,4 +1,4 @@
-### StyloSpace - Interactive 3D Room Planner
+# StyloSpace - Interactive 3D Room Planner
 
 A browser-based 3D room planning application that enables users to design and visualize interior spaces in real-time.
 

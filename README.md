@@ -2,6 +2,9 @@
 
 A browser-based 3D room planning application that enables users to design and visualize interior spaces in real-time.
 
+## Live Demo
+[Link]
+
 ## Features
 
 - **Custom Room Creation**: Define room dimensions (width, length, height)
@@ -117,3 +120,6 @@ stylospace/
 ├── tailwind.config.js    # Tailwind CSS configuration
 └── tsconfig.json         # TypeScript configuration
 ```
+
+
+[Link]: https://stylospace.netlify.app/
